@@ -383,7 +383,7 @@ module Kitchen
       end
 
       def tag_server(server)
-        if config[:tags]
+        if config[:tags] && !config[:tags]empty?
           tags = []
           config[:tags].each do |k, v|
             tags << { :key => k, :value => v }
@@ -393,12 +393,14 @@ module Kitchen
       end
 
       def tag_volumes(server)
-        tags = []
-        config[:tags].each do |k, v|
-          tags << { :key => k, :value => v }
-        end
-        server.volumes.each do |volume|
-          volume.create_tags(:tags => tags)
+        if config[:tags] && !config[:tags].empty?
+          tags = []
+          config[:tags].each do |k, v|
+            tags << { :key => k, :value => v }
+          end
+          server.volumes.each do |volume|
+            volume.create_tags(:tags => tags)
+          end
         end
       end
 
